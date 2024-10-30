@@ -12,3 +12,4 @@ services:
     ports:
       - 8001:443
     restart: unless-stopped
+    env_file: "../.env"
