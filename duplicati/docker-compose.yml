@@ -1,0 +1,15 @@
+---
+services:
+  duplicati:
+    image: lscr.io/linuxserver/duplicati:latest
+    container_name: duplicati
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TX=${TIMEZONE}
+    volumes:
+      - ${DOCKER_DIR}/duplicati:/config
+      - ${DISK_DIR}:/source
+    ports:
+      - ${DUPLICATI_PORT}:8200
+    restart: unless-stopped
