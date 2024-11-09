@@ -3,10 +3,7 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
+    user: "0:0"
     command: "--config.file=/etc/prometheus/prometheus.yml"
     volumes:
       - ${COMPOSE_DIR}/monitoring/prometheus:/etc/prometheus
@@ -17,10 +14,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
+    user: "0:0"
     volumes:
       - ${DOCKER_DIR}/monitoring/grafana:/var/lib/grafana 
     ports:
@@ -29,10 +23,6 @@ services:
   node_exporter:
     image: prom/node-exporter:latest
     container_name: node_exporter
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
     command: "--path.rootfs=/host"
     volumes:
       - '/:/host:ro,rslave'
