@@ -17,7 +17,7 @@ services:
       - EMAIL=${EMAIL}
     volumes:
       - ${DOCKER_DIR}/swag:/config
-      - ${COMPOSE_DIR}/swag:/config/nginx/proxy-confs
+      - ${COMPOSE_DIR}/swag/swag:/config/nginx/proxy-confs
     ports:
       - ${SWAG_PORT}:443
     restart: unless-stopped
