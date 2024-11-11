@@ -1,0 +1,29 @@
+---
+services:
+  swag:
+    image: lscr.io/linuxserver/swag:latest
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - DOCKER_MODS=linuxserver/mods:swag-auto-reload
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+      - URL=${DUCKDNS_URL}
+      - SUBDOMAINS=wildcard
+      - VALIDATION=duckdns
+      - DUCKDNSTOKEN=${DUCKDNS_TOKEN}
+      - EMAIL=${EMAIL}
+    volumes:
+      - ${DOCKER_DIR}/swag:/config
+      - ${COMPOSE_DIR}/swag:/config/nginx/proxy-confs
+    ports:
+      - ${SWAG_PORT}:443
+    restart: unless-stopped
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: proxy
