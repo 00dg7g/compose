@@ -1,0 +1,72 @@
+---
+services:
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - UMASK=022
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_DIR}/arr/sonarr:/config
+      - ${DISK_DIR}/arr:/data
+    ports:
+      - ${SONARR_PORT}:8989
+    restart: unless-stopped
+    networks:
+      - arr
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_DIR}/arr/prowlarr:/config
+    ports:
+      - ${PROWLARR_PORT}:9696
+    restart: unless-stopped
+    networks:
+      - arr
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - UMASK=022
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_DIR}/arr/transmission:/config
+      - ${DISK_DIR}/arr/torrents:/data/torrents
+    ports:
+      - 9091:9091
+      - ${TRANSMISSION_TCP_PORT}:51413
+      - ${TRANSMISSION_UDP_PORT}:51413/udp
+    restart: unless-stopped
+    networks:
+      - arr
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - UMASK=022
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_DIR}/arr/jellyfin:/config
+      - ${DISK_DIR}/arr/media/:/data/media
+    ports:
+      - ${JELLYFIN_PORT}:8096
+    restart: unless-stopped
+    networks:
+      - proxy
+      - arr
+networks:
+  proxy:
+    external: true
+  arr:
+    name: arr
