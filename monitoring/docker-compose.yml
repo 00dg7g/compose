@@ -29,3 +29,9 @@ services:
     ports:
       - ${NODE_EXPORTER_PORT}:9100
     restart: unless-stopped
+  smartctl-exporter:
+    image: prometheuscommunity/smartctl-exporter
+    privileged: true
+    user: root
+    ports:
+      - ${SMARTCTL_EXPORTER_PORT}:9633
