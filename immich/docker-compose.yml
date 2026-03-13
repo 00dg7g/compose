@@ -4,12 +4,14 @@ services:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
     volumes:
-      - ${DISK_DIR}/immich:/data
-      - ${DOCKER_DIR}/immich/thumbs:/data/thumbs
-      - ${DOCKER_DIR}/immich/encoded-video:/data/encoded-video
-      - ${DOCKER_DIR}/immich/profile:/data/profile
-      - ${DOCKER_DIR}/immich/backups:/data/backups
+      - ${UPLOAD_LOCATION}:/data
+      - ${THUMB_LOCATION}:/data/thumbs
+      - ${ENCODED_VIDEO_LOCATION}:/data/encoded-video
+      - ${PROFILE_LOCATION}:/data/profile
+      - ${BACKUP_LOCATION}:/data/backups
       - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - ../.env
     ports:
       - ${IMMICH_PORT}:2283
     depends_on:
@@ -24,6 +26,8 @@ services:
     image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}
     volumes:
       - model-cache:/cache
+    env_file:
+      - ../.env
     restart: always
     healthcheck:
       disable: false
@@ -44,7 +48,7 @@ services:
       POSTGRES_DB: ${DB_DATABASE_NAME}
       POSTGRES_INITDB_ARGS: '--data-checksums'
     volumes:
-      - ${DOCKER_DIR}/immich:/var/lib/postgresql/data
+      - ${DB_DATA_LOCATION}:/var/lib/postgresql/data
     shm_size: 128mb
     restart: always
     healthcheck:
