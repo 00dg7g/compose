@@ -1,0 +1,27 @@
+---
+services:
+  syncthing:
+    image: lscr.io/linuxserver/syncthing:latest
+    container_name: syncthing
+    hostname: rinaldo
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_DIR}/syncthing:/config
+      - ${DISK_DIR}/syncthing:/sync
+    ports:
+      - ${SYNCTHING_PORT}:8384
+      - 22000:22000/tcp
+      - 22000:22000/udp
+      - 21027:21027/udp
+    restart: unless-stopped
+  server:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - ${NGINX_SYNCTHING_PORT}:80
+    volumes:
+      - ${DISK_DIR}/syncthing:/srv
+      - ${COMPOSE_DIR}/syncthing/nginx.conf:/etc/nginx/conf.d/default.conf
